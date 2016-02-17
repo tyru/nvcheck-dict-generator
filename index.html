@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html ng-app='nvcheck-dict-generator'>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Nvcheck dict.yml Generator</title>
+
+    <link rel="stylesheet" href="css/index.css" type="text/css" media="screen" charset="utf-8">
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.4.2/js-yaml.min.js'></script>
+    <script src='js/angular.min.js'></script>
+    <script src='js/index.js'></script>
+  </head>
+  <body ng-controller='indexCtrl'>
+    <textarea ng-model='inputdict' placeholder='Paste your dict.yaml!'></textarea>
+    <button ng-click='load()'>Load</button>
+    <textarea ng-if='loaded' readonly>{{outputdict}}</textarea>
+
+    <ul>
+      <li ng-repeat='(group, words) in candidates'>
+        <hr>
+        <div ng-repeat='word in words'>
+          <input ng-attr-id='{{$index}}' type='radio' ng-attr-name='{{group}}' ng-checked='word.checked' ng-click='checkChanged(group, $index)'>
+          <label for='{{$index}}'>{{word.string}}</label>
+        </div>
+      </li>
+    </ul>
+  </body>
+</html>
