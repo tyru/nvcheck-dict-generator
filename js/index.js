@@ -6,7 +6,7 @@
     app.controller('indexCtrl', [
         '$scope',
         function indexCtrl($scope, $location, $http, rom2hira) {
-            $scope.inputdict = 'greeting: hello\nname: world';
+            $scope.inputdict = '';
             // $scope.candidates = ...;
             // $scope.outputdict = ...;
             $scope.load = (function() {
