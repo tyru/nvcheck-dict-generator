@@ -19,9 +19,12 @@
                 console.log('inputyaml = ' + angular.toJson(inputyaml));
                 for (key in inputyaml) {
                     words = [];
-                    list = [key];
-                    list = list.concat(isArray(inputyaml[key]) ?
-                                        inputyaml[key] : [inputyaml[key]]);
+                    if (inputyaml[key] !== null) {
+                        list = [key].concat(
+                            isArray(inputyaml[key]) ?
+                                inputyaml[key] : [inputyaml[key]]
+                        );
+                    }
                     for (var j = 0; j < list.length; ++j) {
                         words.push({
                             string: list[j],
@@ -64,8 +67,7 @@
                         }
                     }
                     if (key === '') {
-                        alert('internal error: empty key!');
-                        return;
+                        key = outwords[0];
                     }
                     // TODO: Check duplicated entries?
                     outputdict[key] = outwords;
