@@ -11,6 +11,9 @@
     <script src='js/index.js'></script>
   </head>
   <body ng-controller='indexCtrl'>
+
+    <p>Get a sample from <a href='https://github.com/vim-jp/vimdoc-ja-working/blob/master/dict.yml'>here</a>.<p/>
+
     <textarea ng-model='inputdict' placeholder='Paste your dict.yaml!'></textarea>
     <button ng-click='load()'>Load</button>
     <textarea ng-if='loaded' readonly>{{outputdict}}</textarea>
