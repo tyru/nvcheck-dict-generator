@@ -17,8 +17,11 @@
     <p>Get a sample from <a href='https://github.com/vim-jp/vimdoc-ja-working/blob/master/dict.yml'>here</a>.<p/>
 
     <div id='textarea-container'>
+      <div id='buttons'>
+        <button ng-click='load()'>Load</button>
+      </div>
+
       <textarea class='input' ng-model='inputdict' placeholder='Paste your dict.yaml!'></textarea>
-      <button ng-click='load()'>Load</button>
       <textarea class='output' ng-if='loaded' readonly>{{outputdict}}</textarea>
     </div>
 
