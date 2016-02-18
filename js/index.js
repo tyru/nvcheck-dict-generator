@@ -20,7 +20,6 @@
                             strWords.push(words[i].string);
                         }
                     }
-                    // TODO: Check duplicated entries?
                     return generateSection(key, strWords);
                 }
                 function generateSection(key, value) {
@@ -86,7 +85,10 @@
             }
 
             // TODO: Freeze inputdict textarea after clicking 'Load' button.
-            // TODO: Add 'Reset' button to reset state (Browser Reload is enough?).
+            // TODO: Warn if both inputdict textarea and radio button(s) are
+            //       changed.
+            // TODO: 'Diff' feature for inputdict and outputdict.
+            // TODO: Check duplicated entries?
 
             $scope.inputdict = '';
             // $scope.sections = ...;
@@ -99,7 +101,9 @@
                         return str.lastIndexOf(prefix, 0) === 0;
                     }
                     function buildWords(key, inputyaml) {
-                        console.log('buildWords(): key = ' + key + ', inputyaml[key] = ' + angular.toJson(inputyaml[key]))
+                        console.log('buildWords(): key = ' + key +
+                                    ', inputyaml[key] = ' +
+                                       angular.toJson(inputyaml[key]));
                         if (! inputyaml.hasOwnProperty(key)) {
                             // FIXME: Parse a key correctly.
                             throw "'" + key + "'" +
@@ -142,7 +146,7 @@
                                 string: sectionLines.join("\n")
                             });
                             console.log('pushed to sections: ' +
-                                        angular.toJson(sections[sections.length-1]));
+                                angular.toJson(sections[sections.length-1]));
 
                         } else if (/^([^:]+):/.test(lines[i])) {    // words
                             // FIXME: Parse a key correctly
@@ -160,7 +164,7 @@
                                     words: buildWords(key, inputyaml)
                                 });
                                 console.log('pushed to sections: ' +
-                                            angular.toJson(sections[sections.length-1]));
+                                    angular.toJson(sections[sections.length-1]));
                                 continue;    // no elements in dictionary
                             }
                             indent = RegExp.$1;
@@ -178,7 +182,7 @@
                                 words: buildWords(key, inputyaml)
                             });
                             console.log('pushed to sections: ' +
-                                        angular.toJson(sections[sections.length-1]));
+                                angular.toJson(sections[sections.length-1]));
 
                         } else {
                             // FIXME: Parse 'inputyaml' correctly.
