@@ -18,8 +18,6 @@
                 // @return string outputdict
                 function generate(sections, inputyaml) {
                     function generateWordsSection(words) {
-                        console.log('generateWordsSection(): words = ' +
-                                     angular.toJson(words));
                         var i, strWords = [], key = '', obj;
                         words = angular.copy(words);
                         for (i = 0; i < words.length; ++i) {
@@ -56,7 +54,7 @@
                     // Process each section key
                     for (i = 0; i < sections.length; ++i) {
                         if (sections[i].type === 'words') {
-                            console.log('sections[i] = ' +
+                            console.log('generate(): sections[i] = ' +
                                          angular.toJson(sections[i]));
                             outputSections.push(
                                 generateWordsSection(sections[i].words)
@@ -128,7 +126,7 @@
                         console.log('lines[' + i + '] = ' + lines[i]);
                         if (CMT_OR_BLNK.test(lines[i])) {    // comment or blank
                             console.log('found comment/blank ' +
-                                        '(' + i + '): ' + lines[i]);
+                                        '(line ' + i + '): ' + lines[i]);
                             for (sectionLines = [];
                                  i < lines.length &&
                                     CMT_OR_BLNK.test(lines[i]);
@@ -146,7 +144,7 @@
                         } else if (/^([^:]+):/.test(lines[i])) {    // words
                             // FIXME: Parse a key correctly
                             console.log('found words ' +
-                                        '(' + i + '): ' + lines[i]);
+                                        '(line ' + i + '): ' + lines[i]);
                             key = RegExp.$1;
                             if (i + 1 >= lines.length) {
                                 break;
@@ -191,7 +189,6 @@
                 var key, i = 0, j, list, words, r;
                 var inputyaml = jsyaml.load($scope.inputdict);
                 var sections = parseSections($scope.inputdict, inputyaml);
-                console.log('inputyaml = ' + angular.toJson(inputyaml));
 
                 $scope.sections = sections;
                 $scope.inputyaml = inputyaml;
