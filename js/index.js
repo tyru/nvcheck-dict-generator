@@ -6,91 +6,94 @@
     app.controller('indexCtrl', [
         '$scope',
         function indexCtrl($scope) {
+            // @param array sections
+            // @param object inputyaml
+            // @return string outputdict
+            function generate(sections, inputyaml) {
+                function generateWordsSection(words) {
+                    var i, strWords = [], key = '', obj;
+                    words = angular.copy(words);
+                    for (i = 0; i < words.length; ++i) {
+                        if (words[i].checked) {
+                            key = words[i].string;
+                        } else {
+                            strWords.push(words[i].string);
+                        }
+                    }
+                    // TODO: Check duplicated entries?
+                    return generateSection(key, strWords);
+                }
+                function generateSection(key, value) {
+                    var obj = {};
+                    if (value === null || value.length === 0) {
+                        return key + ':';
+                    } else {
+                        obj[key] = value;
+                        return jsyaml.dump(obj).
+                                replace(/\n$/, '');    // chomp
+                    }
+                }
+                function isEmptyObj(obj) {
+                    var key, hasOwnProperty = Object.prototype.hasOwnProperty;
+                    for (key in obj) {
+                        if (hasOwnProperty.call(obj, key)) return false;
+                    }
+                    return true;
+                }
+
+                var outputSections = [],
+                    yaml = angular.copy(inputyaml),
+                    key, i, obj = {};
+                // Process each section key
+                for (i = 0; i < sections.length; ++i) {
+                    if (sections[i].type === 'words') {
+                        console.log('generate(): sections[i] = ' +
+                                        angular.toJson(sections[i]));
+                        outputSections.push(
+                            generateWordsSection(sections[i].words)
+                        );
+                        if (yaml.hasOwnProperty(sections[i].key)) {
+                            delete yaml[sections[i].key];
+                        } else {
+                            // FIXME: Parse a key correctly.
+                            throw "'" + key + "'" +
+                                " does not exist in inputyaml!";
+                        }
+                    } else {    // comment or blank
+                        outputSections.push(sections[i].string);
+                    }
+                }
+                // Output rest keys.
+                // (FIXME: If 'inputyaml' is parsed correctly,
+                //         simply this block will be skipped)
+                if (! isEmptyObj(yaml)) {
+                    outputSections.push(
+                        "###########################################\n" +
+                        "# Below words are not correctly parsed... #\n" +
+                        "# I'm appreciate if you report an issue   #\n" +
+                        "# if you see this comment.                #\n" +
+                        "###########################################\n"
+                    );
+                    for (key in yaml) {
+                        outputSections.push(
+                            generateSection(key, yaml[key])
+                        );
+                    }
+                }
+                console.log('generate() = ' +
+                                angular.toJson(outputSections));
+                return outputSections.join("\n");
+            }
+
             // TODO: Freeze inputdict textarea after clicking 'Load' button.
             // TODO: Add 'Reset' button to reset state (Browser Reload is enough?).
 
             $scope.inputdict = '';
             // $scope.sections = ...;
+            // $scope.inputyaml = ...;
             // $scope.outputdict = ...;
+            // $scope.loaded = ...;
             $scope.load = (function() {
-                // @param array sections
-                // @param object inputyaml
-                // @return string outputdict
-                function generate(sections, inputyaml) {
-                    function generateWordsSection(words) {
-                        var i, strWords = [], key = '', obj;
-                        words = angular.copy(words);
-                        for (i = 0; i < words.length; ++i) {
-                            if (words[i].checked) {
-                                key = words[i].string;
-                            } else {
-                                strWords.push(words[i].string);
-                            }
-                        }
-                        // TODO: Check duplicated entries?
-                        return generateSection(key, strWords);
-                    }
-                    function generateSection(key, value) {
-                        var obj = {};
-                        if (value === null || value.length === 0) {
-                            return key + ':';
-                        } else {
-                            obj[key] = value;
-                            return jsyaml.dump(obj).
-                                   replace(/\n$/, '');    // chomp
-                        }
-                    }
-                    function isEmptyObj(obj) {
-                        var key, hasOwnProperty = Object.prototype.hasOwnProperty;
-                        for (key in obj) {
-                            if (hasOwnProperty.call(obj, key)) return false;
-                        }
-                        return true;
-                    }
-
-                    var outputSections = [],
-                        yaml = angular.copy(inputyaml),
-                        key, i, obj = {};
-                    // Process each section key
-                    for (i = 0; i < sections.length; ++i) {
-                        if (sections[i].type === 'words') {
-                            console.log('generate(): sections[i] = ' +
-                                         angular.toJson(sections[i]));
-                            outputSections.push(
-                                generateWordsSection(sections[i].words)
-                            );
-                            if (yaml.hasOwnProperty(sections[i].key)) {
-                                delete yaml[sections[i].key];
-                            } else {
-                                // FIXME: Parse a key correctly.
-                                throw "'" + key + "'" +
-                                    " does not exist in inputyaml!";
-                            }
-                        } else {    // comment or blank
-                            outputSections.push(sections[i].string);
-                        }
-                    }
-                    // Output rest keys.
-                    // (FIXME: If 'inputyaml' is parsed correctly,
-                    //         simply this block will be skipped)
-                    if (! isEmptyObj(yaml)) {
-                        outputSections.push(
-                            "###########################################\n" +
-                            "# Below words are not correctly parsed... #\n" +
-                            "# I'm appreciate if you report an issue   #\n" +
-                            "# if you see this comment.                #\n" +
-                            "###########################################\n"
-                        );
-                        for (key in yaml) {
-                            outputSections.push(
-                                generateSection(key, yaml[key])
-                            );
-                        }
-                    }
-                    console.log('generate() = ' +
-                                 angular.toJson(outputSections));
-                    return outputSections.join("\n");
-                }
                 function parseSections(inputdict, inputyaml) {
                     function startsWith(str, prefix) {
                         return str.lastIndexOf(prefix, 0) === 0;
@@ -197,14 +200,16 @@
                 console.log('load(): sections = ' +
                             angular.toJson(sections));
             });
-            $scope.checkChanged = (function checkChanged(groupName, index) {
+            $scope.checkChanged = (function checkChanged(
+                    groupName, sectionIndex, wordIndex) {
                 console.log('$scope.checkChanged: ' +
                             'groupName = ' + groupName +
-                            ', index = ' + index);
-                // TODO
-                var words = $scope.candidates[groupName];
-                for (var i = 0; i < words.length; ++i) {
-                    words[i].checked = (i == index);
+                            ', sectionIndex = ' + sectionIndex +
+                            ', wordIndex = ' + wordIndex);
+
+                var i, words = $scope.sections[sectionIndex].words;
+                for (i = 0; i < words.length; ++i) {
+                    words[i].checked = (i == wordIndex);
                 }
                 $scope.outputdict =
                     generate($scope.sections, $scope.inputyaml);
