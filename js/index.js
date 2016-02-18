@@ -200,6 +200,13 @@
                 console.log('load(): sections = ' +
                             angular.toJson(sections));
             });
+            $scope.reset = (function reset() {
+                $scope.inputdict = '';
+                delete $scope.sections;
+                delete $scope.inputyaml;
+                delete $scope.outputdict;
+                delete $scope.loaded;
+            });
             $scope.checkChanged = (function checkChanged(
                     groupName, sectionIndex, wordIndex) {
                 console.log('$scope.checkChanged: ' +
