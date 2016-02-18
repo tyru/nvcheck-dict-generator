@@ -1,4 +1,17 @@
 
+header {
+    width: 600px;
+    margin-bottom: 50px;
+    position: relative;
+}
+header #note {
+    position: absolute;
+    left: 300px;
+    top: 60px;
+    font-size: small;
+    color: gray;
+}
+
 #textarea-container {
     width: 0 auto;
 }
