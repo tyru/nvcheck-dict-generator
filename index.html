@@ -14,15 +14,17 @@
 
     <p>Get a sample from <a href='https://github.com/vim-jp/vimdoc-ja-working/blob/master/dict.yml'>here</a>.<p/>
 
-    <textarea ng-model='inputdict' placeholder='Paste your dict.yaml!'></textarea>
-    <button ng-click='load()'>Load</button>
-    <textarea ng-if='loaded' readonly>{{outputdict}}</textarea>
+    <div id='textarea-container'>
+      <textarea class='input' ng-model='inputdict' placeholder='Paste your dict.yaml!'></textarea>
+      <button ng-click='load()'>Load</button>
+      <textarea class='output' ng-if='loaded' readonly>{{outputdict}}</textarea>
+    </div>
 
     <ul>
-      <li ng-repeat='(group, words) in candidates'>
+      <li ng-repeat='section in sections | filter: {type: "words"}'>
         <hr>
-        <div ng-repeat='word in words'>
-          <input ng-attr-id='{{$index}}' type='radio' ng-attr-name='{{group}}' ng-checked='word.checked' ng-click='checkChanged(group, $index)'>
+        <div ng-repeat='word in section.words'>
+          <input ng-attr-id='{{$index}}' type='radio' ng-attr-name='{{section.groupName}}' ng-checked='word.checked' ng-click='checkChanged(section.groupName, $index)'>
           <label for='{{$index}}'>{{word.string}}</label>
         </div>
       </li>

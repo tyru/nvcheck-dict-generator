@@ -1,6 +1,10 @@
 
-textarea {
-    height: 200px;
+#textarea-container {
+    width: 0 auto;
+}
+#textarea-container textarea {
+    width: 40%;
+    height: 300px;
 }
 ul {
     margin: 0 0;
