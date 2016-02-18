@@ -4,8 +4,8 @@
     var app = angular.module('nvcheck-dict-generator', []);
 
     app.controller('indexCtrl', [
-        '$scope',
-        function indexCtrl($scope) {
+        '$scope', '$timeout',
+        function indexCtrl($scope, $timeout) {
             // @param array sections
             // @param object inputyaml
             // @return string outputdict
@@ -194,8 +194,16 @@
                 }
 
                 var key, i = 0, j, list, words, r;
-                var inputyaml = jsyaml.load($scope.inputdict);
-                var sections = parseSections($scope.inputdict, inputyaml);
+                var inputyaml, sections;
+                if (/^\s*$/.test($scope.inputdict)) {
+                    $scope.blinkNote = true;
+                    $timeout(function () {
+                        $scope.blinkNote = false;
+                    }, 400);
+                    return;
+                }
+                inputyaml = jsyaml.load($scope.inputdict);
+                sections = parseSections($scope.inputdict, inputyaml);
 
                 $scope.sections = sections;
                 $scope.inputyaml = inputyaml;

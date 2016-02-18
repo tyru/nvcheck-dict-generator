@@ -10,6 +10,20 @@ header #note {
     top: 60px;
     font-size: small;
     color: gray;
+
+    transition: all 0.6s linear;
+    -moz-transition: all 0.6s linear;
+    -webkit-transition: all 0.6s linear;
+    -o-transition: all 0.6s linear;
+    -ms-transition: all 0.6s linear;
+}
+#note.blink {
+    color: white;
+    background-color: #555;
+}
+#note.blink a:link,
+#note.blink a:visited {
+    color: white;
 }
 
 #textarea-container {
